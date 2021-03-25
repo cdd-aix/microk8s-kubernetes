@@ -30,6 +30,7 @@ SHELL
     wkube.vm.provider 'virtualbox' do |v|
       v.gui = true
     end
+    wkube.vm.provision 'install-kube-through-calico', type: 'shell', path: 'install-kube-via-calico.ps1'
   end
 end
 # rubocop:enable Metrics/BlockLength
