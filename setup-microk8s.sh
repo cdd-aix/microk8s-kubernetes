@@ -25,7 +25,7 @@ SetupMicroK8s() {
     cleanversion="${cleanversion#v}"
     echo "$cleanversion" > ~/.kube/version
     mkdir -p /vagrant/.kube
-    cp -v ~/.kube/{config,version} /vagrant/
+    cp -v ~/.kube/{config,version} /vagrant/.kube/
     exit 0
 }
 SetupMicroK8s "$@"
