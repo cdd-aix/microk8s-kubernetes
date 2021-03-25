@@ -18,51 +18,18 @@ Vagrant.configure('2') do |config|
                       source: 'disable-eth0-default-route.sh',
                       destination: 'disable-eth0-default-route.sh'
     kube.vm.provision 'purge-eth0-default-now', type: 'shell', inline: <<-SHELL
-cp -pv disable-eth0-default-route.sh /etc/dhcp/dhclient-exit-hooks.d/
-ip route | awk '$1=="default"&&$5=="eth0"{print "ip route delete default via",$3}' | sh -x
+  cp -pv disable-eth0-default-route.sh /etc/dhcp/dhclient-exit-hooks.d/
+  ip route | awk '$1=="default"&&$5=="eth0"{print "ip route delete default via",$3}' | sh -x
 SHELL
     kube.vm.provision 'setup-microk8s', type: 'shell', path: 'setup-microk8s.sh'
   end
-  config.vm.define 'windows' do |windows|
+  config.vm.define 'wkube1' do |wkube|
     # Should be a stripped down Windows server for size.  This works for a demo
-    windows.vm.hostname = 'wkube1'
-    windows.vm.box = 'rgl/windows-server-2019-standard-amd64'
-    windows.vm.provider 'virtualbox' do |v|
+    wkube.vm.hostname = 'wkube1'
+    wkube.vm.box = 'StefanScherer/windows_2019_docker'
+    wkube.vm.provider 'virtualbox' do |v|
       v.gui = true
     end
-    windows.vm.network 'public_network',
-                       use_dhcp_assigned_default_route: true,
-                       bridge: ['eno1']
-    windows.vm.provision 'hyperv',
-                         type: 'shell',
-                         # This okay for quick prototyping, a bad idea for production
-                         path: 'https://github.com/StefanScherer/packer-windows/raw/main/scripts/docker/2016/install-containers-feature.ps1'
-    windows.vm.provision 'remoteaccess',
-                         type: 'shell',
-                         inline: 'Install-WindowsFeature RemoteAccess RSAT-RemoteAccess-PowerShell Routing'
-    windows.vm.provision 'vpnrouting',
-                         type: 'shell',
-                         inline: 'Install-remoteAccess -VpnType RoutingOnly'
-    windows.vm.provision :reload
-    windows.vm.provision 'docker-group',
-                         type: 'shell',
-                         path: 'https://raw.githubusercontent.com/StefanScherer/packer-windows/main/scripts/docker/add-docker-group.ps1'
-    windows.vm.provision 'install-docker',
-                         type: 'shell',
-                         path: 'https://github.com/StefanScherer/packer-windows/raw/main/scripts/docker/install-docker.ps1',
-                         env: { docker_version: '20.10.0' }
-    # windows.vm.provision 'docker-pull',
-    #                      type: 'shell',
-    #                      path: 'https://github.com/StefanScherer/packer-windows/raw/main/scripts/docker/docker-pull.ps1',
-    #                      # rubocop: disable Metrics/LineLength
-    #                      env: { docker_images: 'mcr.microsoft.com/windows/nanoserver:1809 mcr.microsoft.com/windows/servercore:ltsc2019 mcr.microsoft.com/windows/servercore:1809 mcr.microsoft.com/windows:1809' }
-    # rubocop: enable Metrics/LineLength
-
-    # windows.vm.provision 'open-docker-insecure-port.ps1',
-    #                      type: 'shell',
-    #                      path: 'https://github.com/StefanScherer/packer-windows/raw/main/scripts/docker/open-docker-insecure-port.ps1'
-    # windows.vm.provision 'install-calico',
-    #                      type: 'shell', path: 'install-calico.ps1'
   end
 end
 # rubocop:enable Metrics/BlockLength
