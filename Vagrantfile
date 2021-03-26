@@ -26,6 +26,9 @@ SHELL
   config.vm.define 'wkube1' do |wkube|
     # Should be a stripped down Windows server for size.  This works for a demo
     wkube.vm.hostname = 'wkube1'
+    wkube.vm.network 'public_network',
+                     use_dhcp_assigned_default_route: true,
+                     bridge: ['eno1']
     wkube.vm.box = 'StefanScherer/windows_2019_docker'
     wkube.vm.provider 'virtualbox' do |v|
       v.gui = true

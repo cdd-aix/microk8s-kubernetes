@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 # Shell good practices.
 # Exit on unexpected non-zero exit codes (-e)
 # Fail accessing undefined variables (-u)
@@ -16,6 +16,10 @@ SetupMicroK8s() {
     adduser vagrant microk8s
     # Export kube config
     (mkdir -p ~/.kube; chmod 700 ~/.kube; microk8s config > ~/.kube/config)
+    # Calico requires DNS service
+    microk8s enable dns
+    # Maybe this waits until microk8s is up
+    microk8s status --wait-ready
     # Disable IPIP, windows does not support https://docs.projectcalico.org/getting-started/windows-calico/kubernetes/requirements
     calicoctl patch felixconfiguration default -p '{"spec":{"ipipEnabled":false}}'
     # Setup calicoctl affinity https://microk8s.io/docs/add-a-windows-worker-node-to-microk8s
