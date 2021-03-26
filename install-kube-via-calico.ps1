@@ -6,3 +6,7 @@ $kubeRawVersion = get-content "C:\vagrant\.kube\version"
 $kubeVersion = $kubeRawVersion -replace "`n","" -replace "`r",""
 # Note we are missing calico-system namespace
 c:\install-calico-windows.ps1 -DownloadOnly yes -KubeVersion $kubeVersion
+c:\CalicoWindows\install-calico.ps1
+c:\CalicoWindows\kubernetes\install-kube-services.ps1
+Start-Service kubelet
+Start-Service kube-proxy
