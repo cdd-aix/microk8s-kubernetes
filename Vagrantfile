@@ -33,7 +33,10 @@ SHELL
     wkube.vm.provider 'virtualbox' do |v|
       v.gui = true
     end
-    wkube.vm.provision 'install-kube-through-calico', type: 'shell', path: 'install-kube-via-calico.ps1'
+    wkube.vm.provision 'fetch-calico-installer', type: 'shell', path: 'fetch-calico-installer.ps1'
+    wkube.vm.provision 'windows-node',
+                       type: 'shell', path: 'install-calico-and-join-windows-worker-node.ps1',
+                       powershell_elevated_interactive: true, privileged: true
   end
 end
 # rubocop:enable Metrics/BlockLength
