@@ -1,3 +1,4 @@
+# This runs without error under winrm
 $ErrorActionPreference = "Stop"
 mkdir -force c:\k
 copy -force c:\vagrant\.kube\config c:\k\config
