@@ -56,9 +56,7 @@ else
 Write-Host "Starting Calico..."
 Write-Host "This may take several seconds if the vSwitch needs to be created."
 
-# Start-Service CalicoNode
-# # Proper behavior would be to use
-# (Get-Service CalicoNode).WaitForStatus('Running', '0:00:30')
+# This abuses CalicoFelix depending on CalicoNode
 Start-Service CalicoFelix
 
 if ($env:CALICO_NETWORKING_BACKEND -EQ "windows-bgp")
