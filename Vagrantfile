@@ -33,10 +33,15 @@ SHELL
     wkube.vm.provider 'virtualbox' do |v|
       v.gui = true
     end
+    # wkube.vm.provision 'install-chocolatey', type: 'shell', path: 'install-chocolatey.ps1'
     wkube.vm.provision 'fetch-calico-installer', type: 'shell', path: 'fetch-calico-installer.ps1'
-    wkube.vm.provision 'windows-node',
-                       type: 'shell', path: 'install-calico-and-join-windows-worker-node.ps1',
-                       powershell_elevated_interactive: true, privileged: true
+    # wkube.vm.provision 'windows-node',
+    #                    type: 'shell', path: 'install-calico-and-join-windows-worker-node.ps1',
+    #                    privileged: false
+    # wkube.vm.provision 'install-calico', type: 'shell', inline: 'set-psdebug -Trace 2; & c:\CalicoWindows\install-calico.ps1'
+    wkube.vm.provision 'kludged-installer', type: 'shell', inline: 'copy c:\vagrant\install-calico.ps1 c:\CalicoWindows\install-calico-kludge.ps1 -Force'
+    wkube.vm.provision 'run-installer', type: 'shell', inline: 'c:\CalicoWindows\install-calico-kludge.ps1'
+    wkube.vm.provision 'install-kube-services', type: 'shell', inline: 'c:\CalicoWindows\kubernetes\install-kube-services.ps1; Start-Service kubelet; Start-Service kube-proxy'
   end
 end
 # rubocop:enable Metrics/BlockLength
