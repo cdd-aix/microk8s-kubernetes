@@ -16,8 +16,8 @@ SetupMicroK8s() {
     adduser vagrant microk8s
     # Export kube config
     (mkdir -p ~/.kube; chmod 700 ~/.kube; microk8s config > ~/.kube/config)
-    # Calico requires DNS service
-    microk8s enable dns
+    # Calico requires DNS service.  We'll want storage service soon enough
+    microk8s enable dns storage
     # Maybe this waits until microk8s is up
     microk8s status --wait-ready
     # Disable IPIP, windows does not support https://docs.projectcalico.org/getting-started/windows-calico/kubernetes/requirements
